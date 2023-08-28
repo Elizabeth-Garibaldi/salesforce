@@ -1,0 +1,50 @@
+<template>
+  <lightning-card title="Transactions">
+    <lightning-layout>
+        <lightning-layout-item size="2" padding="around-small">
+          <lightning-combobox name="filterBy" value={filterBy} label="Filter By" options={FilterByOptions} onchange={filterbyHandler}>
+          </lightning-combobox>
+        </lightning-layout-item>
+        <lightning-layout-item size="3" padding="around-small">
+          <lightning-input type="text" label="Filter" onkeyup={filterHandler}></lightning-input>
+        </lightning-layout-item>
+      </lightning-layout>
+        <template if:true={showSpinner}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+        <template if:false={showSpinner}>
+        </template>
+        <template if:true={transactions}>
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                <thead>
+                  <tr>
+                      <template for:each={headings} for:item="heading">
+                        <th key={heading}>{heading}</th>
+                      </template>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={transactions} for:item="transaction">
+                        <tr key={heading}>
+                          <td>{transaction.date_time}</td>
+                          <td>{transaction.date}</td>
+                          <td>{transaction.last4}</td>
+                          <td>{transaction.reader_type_code}</td>
+                          <td>{transaction.issuer}</td>
+                          <td>{transaction.receipt_no}</td>
+                          <td>{transaction.cashier}</td>
+                          <td>{transaction.status_message}</td>
+                          <td>{transaction.transaction_id}</td>
+                          <td>{transaction.term}</td>
+                          <td>{transaction.base_amount}</td>
+                          <td>{transaction.amount}</td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </template>
+        <template if:false={transactions}>
+            <p>No transactions data available.</p>
+        </template>
+  </lightning-card>
+</template>
