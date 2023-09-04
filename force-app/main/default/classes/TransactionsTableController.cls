@@ -1,8 +1,9 @@
 public with sharing class TransactionsTableController {
     @AuraEnabled(cacheable=true)
-    public static Map<String, Object> retriveTransactions(){
+    public static Map<String, Object> retriveTransactions(String merchantId){
         HttpRequest httpRequest = new HttpRequest();
-        httpRequest.setEndpoint('https://run.mocky.io/v3/f2ce95a8-26ad-456d-be87-846d0129a09e');
+        String url = 'https://run.mocky.io/v3/f2ce95a8-26ad-456d-be87-846d0129a09e/' + merchantId;
+        httpRequest.setEndpoint(url);
         httpRequest.setMethod('GET');
 
         Map<String, Object> newsJsonData = new Map<String, Object>();
@@ -13,6 +14,7 @@ public with sharing class TransactionsTableController {
             HttpResponse httpResponse = http.send(httpRequest);
             if (httpResponse.getStatusCode() == 200) {
                 strResponse = httpResponse.getBody();
+                System.debug(strResponse);
             } else {
                 throw new CalloutException(httpResponse.getBody());
             }

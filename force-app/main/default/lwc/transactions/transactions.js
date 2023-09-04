@@ -1,21 +1,42 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, wire } from 'lwc';
+import { CurrentPageReference } from 'lightning/navigation';
+
 import retriveTransactions from '@salesforce/apex/TransactionsTableController.retriveTransactions';
-import retriveTxn from '@salesforce/apex/TransactionsTableController.retriveTxn';
+// import retriveTxn from '@salesforce/apex/TransactionsTableController.retriveTxn';
 export default class Transactions extends LightningElement {
   @track error;
+  merchantId;
   @track transactions = []
-  fullTableData=[]
-  fullTableData2=[]
   headings=["Txn Date","Payment Date", "Card", "Charged with", "Issuer", "Receipt Num", "Cashier", "Status", "Txn ID", "Term", "Subtotal", "Total"];
   filterBy="receipt_no"
   showSpinner = false;
   timer;
+  @wire(CurrentPageReference)
+    currentPageReference;
   connectedCallback() {
     this.showSpinner = true;
-    this.fetchFilteredData(retriveTxn);
-    this.fetchFilteredData(retriveTransactions, true);
+    if ( this.currentPageReference.state.c__merchantId ) {
+      this.merchantId = this.currentPageReference.state.c__merchantId;
+      this.fetchData(this.merchantId);
+    }
+    // this.fetchFilteredData(retriveTxn);
+    // this.fetchFilteredData(retriveTransactions, true);
   }
 
+  fetchData(merchantId){
+    console.log(merchantId);
+    retriveTransactions({merchantId: merchantId})
+    .then(response => {
+      this.transactions = response.transactions;
+      console.log(response);
+    })
+    .catch(error => {
+      this.handleError(error)
+      console.log(error)})
+    .finally(() => {
+      this.showSpinner = false;
+    });
+  }
   fetchFilteredData(apexMethod, isSecondData = false) {
     apexMethod()
       .then(response => {
