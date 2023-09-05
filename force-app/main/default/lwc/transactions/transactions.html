@@ -6,7 +6,10 @@
           </lightning-combobox>
         </lightning-layout-item>
         <lightning-layout-item size="3" padding="around-small">
-          <lightning-input type="text" label="Filter" onkeyup={filterHandler}></lightning-input>
+          <lightning-input id="inputFilter" type="text" label="Filter" value={searchValue} onchange={handleSearchChange}></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item vertical-align="end" padding="around-small">
+          <lightning-button  variant="brand" label="Search" icon-name="utility:search" icon-position="right" onclick={handleSearch} disabled={isButtonDisabled}></lightning-button>
         </lightning-layout-item>
       </lightning-layout>
         <template if:true={showSpinner}>
@@ -15,33 +18,14 @@
         <template if:false={showSpinner}>
         </template>
         <template if:true={transactions}>
-            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
-                <thead>
-                  <tr>
-                      <template for:each={headings} for:item="heading">
-                        <th key={heading}>{heading}</th>
-                      </template>
-                    </tr>
-                </thead>
-                <tbody>
-                    <template for:each={transactions} for:item="transaction">
-                        <tr key={heading}>
-                          <td>{transaction.date_time}</td>
-                          <td>{transaction.date}</td>
-                          <td>{transaction.last4}</td>
-                          <td>{transaction.reader_type_code}</td>
-                          <td>{transaction.issuer}</td>
-                          <td>{transaction.receipt_no}</td>
-                          <td>{transaction.cashier}</td>
-                          <td>{transaction.status_message}</td>
-                          <td>{transaction.transaction_id}</td>
-                          <td>{transaction.term}</td>
-                          <td>{transaction.base_amount}</td>
-                          <td>{transaction.amount}</td>
-                        </tr>
-                    </template>
-                </tbody>
-            </table>
+            <div class="transactionsTable">
+              <lightning-datatable
+              key-field="id"
+              data={transactions}
+              columns={columns}
+              hide-checkbox-column
+            ></lightning-datatable>
+            </div>
         </template>
         <template if:false={transactions}>
             <p>No transactions data available.</p>

@@ -1,8 +1,8 @@
-public with sharing class TransactionsTableController {
+public with sharing class TransactionsController {
     @AuraEnabled(cacheable=true)
-    public static Map<String, Object> retriveTransactions(String merchantId){
+    public static Map<String, Object> retriveTransactions(String receiptNum){
         HttpRequest httpRequest = new HttpRequest();
-        String url = 'https://run.mocky.io/v3/f2ce95a8-26ad-456d-be87-846d0129a09e/' + merchantId;
+        String url = 'https://run.mocky.io/v3/f0b3fc38-f9d2-4ea1-874c-35230b6ccad5/' + '?c__receiptNum=' + receiptNum;
         httpRequest.setEndpoint(url);
         httpRequest.setMethod('GET');
 
@@ -14,7 +14,6 @@ public with sharing class TransactionsTableController {
             HttpResponse httpResponse = http.send(httpRequest);
             if (httpResponse.getStatusCode() == 200) {
                 strResponse = httpResponse.getBody();
-                System.debug(strResponse);
             } else {
                 throw new CalloutException(httpResponse.getBody());
             }
@@ -36,7 +35,7 @@ public with sharing class TransactionsTableController {
     @AuraEnabled
         public static Map<String, Object> retriveTxn(){
             HttpRequest httpRequest = new HttpRequest();
-            httpRequest.setEndpoint('https://run.mocky.io/v3/e07f0501-53eb-456f-935b-7c2e5c97aedd');
+            httpRequest.setEndpoint('https://run.mocky.io/v3/f0b3fc38-f9d2-4ea1-874c-35230b6ccad5');
             httpRequest.setMethod('GET');
     
             Map<String, Object> txnJsonData = new Map<String, Object>();
